@@ -31,6 +31,8 @@ public class Main {
                 limit = Integer.parseInt(args[1]);
                 justify = Boolean.parseBoolean(args[2]);
                 break;
+            default:
+            	break;
         }
 
         // Print input data
@@ -41,7 +43,7 @@ public class Main {
         System.out.println("=========================");
 
         // Run IdwallFormatter
-        final StringFormatter sf = new IdwallFormatter();
+        final StringFormatter sf = new IdwallFormatter(40);
         String outputText = sf.format(text);
 
         // Print output text
