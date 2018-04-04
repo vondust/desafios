@@ -43,7 +43,7 @@ public class Main {
         System.out.println("=========================");
 
         // Run IdwallFormatter
-        final StringFormatter sf = new IdwallFormatter(40);
+        final StringFormatter sf = new IdwallFormatter(limit);
         String outputText = sf.format(text);
 
         // Print output text
