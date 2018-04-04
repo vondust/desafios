@@ -23,70 +23,83 @@ public class IdwallFormatter extends StringFormatter {
 		List<String> lineList = new ArrayList<>();
 		StringBuilder result = new StringBuilder();
 
-		int index = 0;
+		// Cria array de paragrafos
+		String[] paragraphs = text.split("\n");
+		StringBuilder paragraphFinal = new StringBuilder();
 
-		String[] wordsSplit = text.split(" ");
-		StringBuilder lineBuilder = new StringBuilder();
+		// Para cada parágrafo, justify
+		for (int i = 0; i < paragraphs.length; i++) {
 
-		while (index < wordsSplit.length) {
+			// Cria array de palavras
+			String[] wordsSplit = paragraphs[i].split(" ");
+			StringBuilder lineBuilder = new StringBuilder();
+			int index = 0;
 
-			if ((lineBuilder.length() + wordsSplit[index].length() + 1) <= limit) {
-				lineBuilder.append(" " + wordsSplit[index]);
-				index++;
-			} else {
-				String temp = justifyText(lineBuilder.toString());
-				lineList.add(temp);
-				result.append(temp + "\n");
-				lineBuilder = new StringBuilder();
+			while (index < wordsSplit.length) {
+
+				// Monta linha de max length = 40
+				if ((lineBuilder.length() + wordsSplit[index].length() + 1) <= limit) {
+
+					if (lineBuilder.length() == 0)
+						lineBuilder.append(wordsSplit[index]);
+					else
+						lineBuilder.append(" " + wordsSplit[index]);
+
+					index++;
+				} else {
+					String temp = justifyText(lineBuilder.toString());
+					lineList.add(temp);
+					paragraphFinal.append(temp + "\n");
+					lineBuilder = new StringBuilder();
+				}
+
+				if (index == wordsSplit.length && lineBuilder.length() > 0) {
+					String temp = justifyText(lineBuilder.toString());
+					lineList.add(temp);
+					paragraphFinal.append(temp);
+					lineBuilder = new StringBuilder();
+				}
 			}
+			result.append(paragraphFinal).append("\n");
+			paragraphFinal = new StringBuilder();
 		}
-
-		System.out.println("Items:");
-		lineList.forEach(line -> {
-			System.out.printf("[size %d] > [%s] \n", line.length(), line);
-		});
-
 		return result.toString();
 	}
 
+	/**
+	 * Insere um espaço (\\s) para cada espaço entre letras que encontrar (index
+	 * crescente) até que a linha tenha 40 characteres.
+	 * 
+	 * @param line
+	 * @return line justified
+	 */
 	private String justifyText(String line) {
 
-		StringBuilder lineBuilder = new StringBuilder(line);
+		StringBuilder lineBuilder = new StringBuilder(line.trim());
 
 		int total = 0;
 		int indexChar = 0;
 		int indexStart = 0;
-
-		if (lineBuilder.toString().startsWith(" "))
-			lineBuilder = new StringBuilder().append(line.substring(1));
-		if (lineBuilder.toString().endsWith(" "))
-			lineBuilder = new StringBuilder().append(line.substring(0, lineBuilder.length() - 1));
 
 		if (lineBuilder.length() < limit) {
 
 			total = limit - lineBuilder.length();
 
 			while (total > 0) {
-				System.out.println("TOTAL > " + total);
+
 				indexChar = lineBuilder.toString().indexOf(" ", indexStart);
-				System.out.println("INDEX > " + indexChar);
 
 				if (indexChar < 0) {
 					indexChar = 0;
 					indexStart = 0;
-				} else if (indexChar < 0) {
-					indexChar = 1;
 				} else {
-					String temp1 = lineBuilder.toString().substring(0, indexChar);
-					String temp2 = lineBuilder.toString().substring(indexChar);
-					lineBuilder = new StringBuilder().append(temp1).append(" ").append(temp2);
-					System.out.println("FINAL > " + lineBuilder.toString() + " | Length = " + lineBuilder.length());
+					lineBuilder = new StringBuilder().append(lineBuilder.toString().substring(0, indexChar)).append(" ")
+							.append(lineBuilder.toString().substring(indexChar));
 					indexStart = indexChar + 2;
 					total--;
 				}
 			}
 		}
-
 		return lineBuilder.toString();
 	}
 }
