@@ -37,6 +37,10 @@ public class IdwallFormatter extends StringFormatter {
 
 			while (index < wordsSplit.length) {
 
+				if (wordsSplit[index].length() > limit)
+					throw new IllegalArgumentException(
+							"A palavra " + wordsSplit[index] + " é maior que o limite estabelecido para uma linha");
+
 				// Monta linha de max length = 40
 				if ((lineBuilder.length() + wordsSplit[index].length() + 1) <= limit) {
 
